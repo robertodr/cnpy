@@ -5,36 +5,33 @@
 #ifndef LIBCNPY_H_
 #define LIBCNPY_H_
 
-#include<string>
-#include<stdexcept>
-#include<sstream>
-#include<vector>
-#include<cstdio>
-#include<typeinfo>
-#include<iostream>
-#include<cassert>
-#include<zlib.h>
-#include<map>
-#include<memory>
-#include<stdint.h>
+#include <cassert>
+#include <cstdint>
+#include <cstdio>
+#include <functional>
+#include <iostream>
+#include <map>
+#include <numeric>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <typeinfo>
+#include <vector>
+#include <zlib.h>
 
 namespace cnpy {
 
     struct NpyArray {
         NpyArray(const std::vector<size_t>& _shape, size_t _word_size, bool _fortran_order) :
-            shape(_shape), word_size(_word_size), fortran_order(_fortran_order)
-        {
-            num_vals = 1;
-            for(size_t i = 0;i < shape.size();i++) num_vals *= shape[i];
-            data_holder = std::shared_ptr<std::vector<char>>(
-                new std::vector<char>(num_vals * word_size));
-        }
+            shape(_shape), word_size(_word_size), fortran_order(_fortran_order),
+            num_vals(std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<int>())),
+            data_holder(num_vals) {}
 
-        NpyArray() : shape(0), word_size(0), fortran_order(0), num_vals(0) { }
+        NpyArray() : shape(0), word_size(0), fortran_order(false), num_vals(0), data_holder(num_vals) { }
 
         template<typename T>
         T* data() {
-            return reinterpret_cast<T*>(&(*data_holder)[0]);
+            return reinterpret_cast<T*>(data_holder[0]);
         }
 
         template<typename T>
@@ -44,16 +41,16 @@ namespace cnpy {
         }
 
         size_t num_bytes() {
-            return data_holder->size();
+            return data_holder.size();
         }
 
-        std::shared_ptr<std::vector<char>> data_holder;
         std::vector<size_t> shape;
         size_t word_size;
         bool fortran_order;
         size_t num_vals;
+        std::vector<char> data_holder;
     };
-    
+
     struct npz_t : public std::map<std::string, NpyArray>
     {
     };
@@ -70,14 +67,14 @@ namespace cnpy {
     template<typename T> std::vector<char>& operator+=(std::vector<char>& lhs, const T rhs) {
         //write in little endian
         for(size_t byte = 0; byte < sizeof(T); byte++) {
-            char val = *((char*)&rhs+byte); 
+            char val = *((char*)&rhs+byte);
             lhs.push_back(val);
         }
         return lhs;
     }
 
-    template<> std::vector<char>& operator+=(std::vector<char>& lhs, const std::string rhs); 
-    template<> std::vector<char>& operator+=(std::vector<char>& lhs, const char* rhs); 
+    template<> std::vector<char>& operator+=(std::vector<char>& lhs, const std::string rhs);
+    template<> std::vector<char>& operator+=(std::vector<char>& lhs, const char* rhs);
 
 
     template<typename T> std::string tostring(T i) {
@@ -150,7 +147,7 @@ namespace cnpy {
         if(fp) {
             //zip file exists. we need to add a new npy file to it.
             //first read the footer. this gives us the offset and size of the global header
-            //then read and store the global header. 
+            //then read and store the global header.
             //below, we will write the the new data at the start of the global header then append the global header and footer below it
             size_t global_header_size;
             parse_zip_footer(fp,nrecs,global_header_size,global_header_offset);
@@ -216,7 +213,7 @@ namespace cnpy {
         footer += (uint32_t) (global_header_offset + nbytes + local_header.size()); //offset of start of global headers, since global header now starts after newly written array
         footer += (uint16_t) 0; //zip file comment length
 
-        //write everything      
+        //write everything
         fwrite(&local_header[0],sizeof(char),local_header.size(),fp);
         fwrite(&npy_header[0],sizeof(char),npy_header.size(),fp);
         fwrite(data,sizeof(T),nels,fp);
@@ -228,16 +225,28 @@ namespace cnpy {
     template<typename T> void npy_save(std::string fname, const std::vector<T> data, std::string mode = "w") {
         std::vector<size_t> shape;
         shape.push_back(data.size());
-        npy_save(fname, &data[0], shape, mode);
+        npy_save(fname, &data.front(), shape, mode);
+    }
+
+    template<typename T> void npy_save(std::string fname, T data, std::string mode = "w") {
+        std::vector<size_t> shape;
+        shape.push_back(1);
+        npy_save(fname, data, shape, mode);
     }
 
     template<typename T> void npz_save(std::string zipname, std::string fname, const std::vector<T> data, std::string mode = "w") {
         std::vector<size_t> shape;
         shape.push_back(data.size());
-        npz_save(zipname, fname, &data[0], shape, mode);
+        npz_save(zipname, fname, &data.front(), shape, mode);
     }
 
-    template<typename T> std::vector<char> create_npy_header(const std::vector<size_t>& shape) {  
+    template<typename T> void npz_save(std::string zipname, std::string fname, T data, std::string mode = "w") {
+        std::vector<size_t> shape;
+        shape.push_back(1);
+        npz_save(zipname, fname, &data, shape, mode);
+    }
+
+    template<typename T> std::vector<char> create_npy_header(const std::vector<size_t>& shape) {
 
         std::vector<char> dict;
         dict += "{'descr': '";
