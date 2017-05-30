@@ -1,9 +1,13 @@
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+
 list(APPEND _sources cnpy.cpp cnpy.h)
+add_library(_cnpy OBJECT ${_sources})
+set_target_properties(_cnpy PROPERTIES POSITION_INDEPENDENT_CODE 1)
 
 if(NOT STATIC_LIBRARY_ONLY)
   add_library(${PROJECT_NAME}-shared
     SHARED
-    ${_sources}
+    $<TARGET_OBJECTS:_cnpy>
     )
   set_target_properties(${PROJECT_NAME}-shared PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
     CXX_VISIBILITY_PRESET hidden
@@ -21,7 +25,7 @@ endif()
 if(NOT SHARED_LIBRARY_ONLY)
   add_library(${PROJECT_NAME}-static
     STATIC
-    ${_sources}
+    $<TARGET_OBJECTS:_cnpy>
     )
   set_target_properties(${PROJECT_NAME}-static PROPERTIES COMPILE_FLAGS -D${PROJECT_NAME}_STATIC_DEFINE
     OUTPUT_NAME "cnpy"
@@ -40,6 +44,7 @@ else()
 endif()
 
 install(FILES ${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}_export.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
+install(FILES ${PROJECT_SOURCE_DIR}/${PROJECT_NAME}.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME})
 
 # <<<  Export interface  >>>
 

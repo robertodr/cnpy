@@ -24,3 +24,4 @@ modules:
     - '%(url_root)modules/default_build_paths.cmake'
     - 'custom/cnpy.cmake'
     - '%(url_root)modules/export_header.cmake'
+    - 'custom/test.cmake'
