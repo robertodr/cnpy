@@ -1,0 +1,24 @@
+name: cnpy
+min_cmake_version: 2.8
+language: CXX
+default_build_type: debug
+
+url_root: https://github.com/coderefinery/autocmake/raw/master/
+setup_script: setup.py
+
+modules:
+- compilers:
+  - source:
+    - '%(url_root)modules/cxx.cmake'
+- plugins:
+  - source:
+    - '%(url_root)modules/custom_color_messages.cmake'
+    - 'custom/GNUdirs.cmake'
+    - 'custom/static_library.cmake'
+    - 'custom/version.cmake'
+    - 'custom/export_target.cmake'
+    - '%(url_root)modules/definitions.cmake'
+    - '%(url_root)modules/safeguards.cmake'
+    - '%(url_root)modules/default_build_paths.cmake'
+    - 'custom/cnpy.cmake'
+    - '%(url_root)modules/export_header.cmake'

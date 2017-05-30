@@ -5,10 +5,10 @@
 #include "cnpy.h"
 #include <algorithm>
 #include <complex>
-#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <iomanip>
+#include <stdint.h>
 
 char cnpy::BigEndianTest() {
     int x = 1;

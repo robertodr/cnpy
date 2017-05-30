@@ -6,7 +6,6 @@
 #define LIBCNPY_H_
 
 #include <cassert>
-#include <cstdint>
 #include <cstdio>
 #include <functional>
 #include <iostream>
@@ -17,6 +16,7 @@
 #include <string>
 #include <typeinfo>
 #include <vector>
+#include <stdint.h>
 #include <zlib.h>
 
 namespace cnpy {
