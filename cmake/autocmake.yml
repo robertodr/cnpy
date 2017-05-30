@@ -1,5 +1,5 @@
 name: cnpy
-min_cmake_version: 2.8
+min_cmake_version: 3.0
 language: CXX
 default_build_type: debug
 
@@ -10,6 +10,8 @@ modules:
 - compilers:
   - source:
     - '%(url_root)modules/cxx.cmake'
+    - 'custom/cxx11.cmake'
+    - 'custom/c99.cmake'
 - plugins:
   - source:
     - '%(url_root)modules/custom_color_messages.cmake'

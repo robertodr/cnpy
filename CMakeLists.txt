@@ -2,7 +2,7 @@
 # Copyright (c) 2015-2017 by Radovan Bast, Jonas Juselius, and contributors.
 
 # set minimum cmake version
-cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
 # project name
 project(cnpy CXX)
@@ -20,6 +20,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/custom)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/downloaded)
 
 # included cmake modules
+include(cxx11)
+include(c99)
 include(autocmake_cxx)
 include(autocmake_custom_color_messages)
 include(GNUdirs)
