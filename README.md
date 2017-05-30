@@ -1,5 +1,7 @@
 # cnpy
 
+C++11 library to save/load arrays to/from NumPy binary format.
+
 ## Purpose
 
 Numpy offers the save method for easy saving of arrays into .npy and savez for
@@ -18,8 +20,6 @@ you to type-cast the loaded data to the type of your choice.
 `cnpy` depends on [Zlib](https://www.zlib.net/) and [CMake](https://cmake.org/).
 The default installation directory is `/usr/local` but you can change that with
 the `--prefix` option to the `setup.py` script.
-CMake will try to use C++11, but fall back to the previous standard if the
-compiler is not compliant.
 ```bash
 >>> python setup.py  # Configure
 >>> cd build
