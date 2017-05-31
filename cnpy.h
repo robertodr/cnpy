@@ -25,13 +25,18 @@ namespace cnpy {
         NpyArray(const std::vector<size_t>& _shape, size_t _word_size, bool _fortran_order) :
             shape(_shape), word_size(_word_size), fortran_order(_fortran_order),
             num_vals(std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<int>())),
-            data_holder(num_vals) {}
+            data_holder(num_vals) {
+              for (size_t i = 0; i < shape.size(); ++i) {
+                std::cout << "shape[" << i << "] = " << shape[i] << std::endl;
+              }
+              std::cout << num_vals << std::endl;
+            }
 
         NpyArray() : shape(0), word_size(0), fortran_order(false), num_vals(0), data_holder(num_vals) { }
 
         template<typename T>
         T* data() {
-            return reinterpret_cast<T*>(data_holder[0]);
+            return reinterpret_cast<T*>(data_holder.data());
         }
 
         template<typename T>

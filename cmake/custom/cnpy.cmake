@@ -1,3 +1,5 @@
+find_package(ZLIB REQUIRED)
+
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
 list(APPEND _sources cnpy.cpp cnpy.h)
