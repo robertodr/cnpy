@@ -19,10 +19,10 @@ int main() {
     data[i] = std::complex<double>(rand(), rand());
 
   // save it to file
-  cnpy::npy_save("arr1.npy", data.data(), {Nz, Ny, Nx}, "w");
+  cnpy::npy_save("arr1_cxx11.npy", data.data(), {Nz, Ny, Nx}, "w");
 
   // load it into a new array
-  cnpy::NpyArray arr = cnpy::npy_load("arr1.npy");
+  cnpy::NpyArray arr = cnpy::npy_load("arr1_cxx11.npy");
   std::complex<double> * loaded_data = arr.data<std::complex<double> >();
 
   // make sure the loaded data matches the saved data
@@ -34,27 +34,27 @@ int main() {
 
   // append the same data to file
   // npy array on file now has shape (Nz+Nz,Ny,Nx)
-  cnpy::npy_save("arr1.npy", data.data(), {Nz, Ny, Nx}, "a");
+  cnpy::npy_save("arr1_cxx11.npy", data.data(), {Nz, Ny, Nx}, "a");
 
   // now write to an npz file
   // non-array variables are treated as 1D arrays with 1 element
   double myVar1 = 1.2;
   char myVar2 = 'a';
   cnpy::npz_save(
-      "out.npz", "myVar1", myVar1, "w"); //"w" overwrites any existing file
+      "out_cxx11.npz", "myVar1", myVar1, "w"); //"w" overwrites any existing file
   cnpy::npz_save(
-      "out.npz", "myVar2", myVar2, "a"); //"a" appends to the file we created above
-  cnpy::npz_save("out.npz",
+      "out_cxx11.npz", "myVar2", myVar2, "a"); //"a" appends to the file we created above
+  cnpy::npz_save("out_cxx11.npz",
                  "arr1",
                  data.data(),
                  {Nz, Ny, Nx},
                  "a"); //"a" appends to the file we created above
 
   // load a single var from the npz file
-  cnpy::NpyArray arr2 = cnpy::npz_load("out.npz", "arr1");
+  cnpy::NpyArray arr2 = cnpy::npz_load("out_cxx11.npz", "arr1");
 
   // load the entire npz file
-  cnpy::npz_t my_npz = cnpy::npz_load("out.npz");
+  cnpy::npz_t my_npz = cnpy::npz_load("out_cxx11.npz");
 
   // check that the loaded myVar1 matches myVar1
   cnpy::NpyArray arr_mv1 = my_npz["myVar1"];
