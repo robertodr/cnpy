@@ -2,6 +2,7 @@
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://raw.githubusercontent.com/robertodr/cnpy/master/LICENSE)
 [![Build Status](https://img.shields.io/travis/robertodr/cnpy/master.svg?style=flat-square)](https://travis-ci.org/robertodr/cnpy)
+[![AppVeyor branch](https://img.shields.io/appveyor/ci/robertodr/cnpy/master.svg?style=flat-square)](https://ci.appveyor.com/project/robertodr/cnpy/branch/master)
 
 C++11 library to save/load arrays to/from NumPy binary format.
 
@@ -65,5 +66,4 @@ struct NpyArray {
 };
 ```
 
-See `example1.cpp` for examples of how to use the library. `example1` will also
-be built during CMake installation.
+See the sample tests for examples of how to use the library.
