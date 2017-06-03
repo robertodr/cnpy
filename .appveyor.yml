@@ -34,9 +34,9 @@ before_build:
   - appveyor DownloadFile https://github.com/madler/zlib/archive/v1.2.8.tar.gz
   - 7z x v1.2.8.tar.gz -so | 7z x -si -ttar > nul
   - cd zlib-1.2.8
-  - cmake -G"%GENERATOR%" .
-  - cmake --build . --config release
-  - set path=%path%;C:\software\zlib-1.2.8
+  - cmd: cmake -G"%GENERATOR%" -DCMAKE_INSTALL_PREFIX="C:\software\zlib" .
+  - cmd: cmake --build . --config release --target install
+  - set PATH=%PATH%;C:\software\zlib
 
 build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
