@@ -30,17 +30,18 @@ before_build:
   - set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
   - set PATH=C:\MinGW\bin;%PATH%
   # Zlib
+  - mkdir C:\software && cd C:\software
   - appveyor DownloadFile https://github.com/madler/zlib/archive/v1.2.8.tar.gz
   - 7z x v1.2.8.tar.gz -so | 7z x -si -ttar > nul
   - cd zlib-1.2.8
-  - cmake -G "Visual Studio 14 2015 Win64" .
+  - cmake -G"%GENERATOR%" .
   - cmake --build . --config release
-  - cd ..
+  - set path=%path%;C:\software\zlib-1.2.8
 
 build_script:
-  - mkdir build
+  - cd %APPVEYOR_BUILD_FOLDER%
+  - python setup.py --generator="%GENERATOR%"
   - cd build
-  - cmake .. -G"%GENERATOR%" -DZLIB_ROOT=C:\zlib-1.2.8
   # See http://msdn.microsoft.com/en-us/library/ms164311.aspx for
   # command-line options to MSBuild.
   - cmd: cmake --build . -- %BUILDFLAGS%
