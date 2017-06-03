@@ -20,6 +20,8 @@
 #include <vector>
 #include <zlib.h>
 
+#include "cnpy_export.h"
+
 namespace cnpy {
 
 struct NpyArray {
@@ -57,24 +59,24 @@ struct NpyArray {
 
 struct npz_t : public std::map<std::string, NpyArray> {};
 
-char BigEndianTest();
-char map_type(const std::type_info & t);
+char cnpy_EXPORT BigEndianTest();
+char cnpy_EXPORT map_type(const std::type_info & t);
 template <typename T>
 std::vector<char> create_npy_header(const std::vector<size_t> & shape);
-void parse_npy_header(FILE * fp,
+void cnpy_EXPORT parse_npy_header(FILE * fp,
                       size_t & word_size,
                       std::vector<size_t> & shape,
                       bool & fortran_order);
-void parse_zip_footer(FILE * fp,
+void cnpy_EXPORT parse_zip_footer(FILE * fp,
                       uint16_t & nrecs,
                       size_t & global_header_size,
                       size_t & global_header_offset);
-npz_t npz_load(std::string fname);
-NpyArray npz_load(std::string fname, std::string varname);
-NpyArray npy_load(std::string fname);
+npz_t cnpy_EXPORT npz_load(std::string fname);
+NpyArray cnpy_EXPORT npz_load(std::string fname, std::string varname);
+NpyArray cnpy_EXPORT npy_load(std::string fname);
 
 template <typename T>
-std::vector<char> & operator+=(std::vector<char> & lhs, const T rhs) {
+cnpy_EXPORT std::vector<char> & operator+=(std::vector<char> & lhs, const T rhs) {
   // write in little endian
   for (size_t byte = 0; byte < sizeof(T); byte++) {
     char val = *((char *)&rhs + byte);

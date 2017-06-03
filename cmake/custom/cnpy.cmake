@@ -3,19 +3,21 @@ find_package(ZLIB REQUIRED)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 
 list(APPEND _sources cnpy.cpp cnpy.h)
-add_library(_cnpy OBJECT ${_sources})
-set_target_properties(_cnpy PROPERTIES POSITION_INDEPENDENT_CODE 1)
+include_directories(${PROJECT_BINARY_DIR}/include)
 
 if(NOT STATIC_LIBRARY_ONLY)
   add_library(${PROJECT_NAME}-shared
     SHARED
-    $<TARGET_OBJECTS:_cnpy>
+    ${_sources}
     )
-  set_target_properties(${PROJECT_NAME}-shared PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
-    CXX_VISIBILITY_PRESET hidden
-    VISIBILITY_INLINES_HIDDEN 1
-    OUTPUT_NAME "cnpy"
-    EXPORT_NAME "cnpy"
+  set_target_properties(${PROJECT_NAME}-shared
+    PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
+               POSITION_INDEPENDENT_CODE 1
+               INTERPROCEDURAL_OPTIMIZATION 1
+               CXX_VISIBILITY_PRESET hidden
+               VISIBILITY_INLINES_HIDDEN 1
+               OUTPUT_NAME "cnpy"
+               EXPORT_NAME "cnpy"
     )
   install(TARGETS ${PROJECT_NAME}-shared
     EXPORT "${PROJECT_NAME}Targets-shared"
@@ -27,11 +29,14 @@ endif()
 if(NOT SHARED_LIBRARY_ONLY)
   add_library(${PROJECT_NAME}-static
     STATIC
-    $<TARGET_OBJECTS:_cnpy>
+    ${_sources}
     )
-  set_target_properties(${PROJECT_NAME}-static PROPERTIES COMPILE_FLAGS -D${PROJECT_NAME}_STATIC_DEFINE
-    OUTPUT_NAME "cnpy"
-    EXPORT_NAME "cnpy"
+  set_target_properties(${PROJECT_NAME}-static
+    PROPERTIES COMPILE_FLAGS -D${PROJECT_NAME}_STATIC_DEFINE
+               POSITION_INDEPENDENT_CODE 1
+               INTERPROCEDURAL_OPTIMIZATION 1
+               OUTPUT_NAME "cnpy"
+               EXPORT_NAME "cnpy"
     )
   install(TARGETS ${PROJECT_NAME}-static
     EXPORT "${PROJECT_NAME}Targets-static"
